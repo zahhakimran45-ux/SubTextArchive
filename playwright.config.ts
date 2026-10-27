@@ -7,6 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
@@ -33,6 +34,10 @@ export default defineConfig({
       // e2e server (it runs `next start`, i.e. NODE_ENV=production). Not used
       // anywhere outside this disposable test database.
       LOCAL_SESSION_SECRET: "e2e-test-secret-not-a-real-deployment-secret-0001",
+      // Both browser projects register 16 accounts from one loopback IP in
+      // under ten minutes; lift the in-process limiter for the disposable
+      // e2e server only. Production never sets this variable.
+      RATE_LIMIT_DISABLED: "1",
     },
   },
 });
